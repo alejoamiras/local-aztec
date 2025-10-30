@@ -1,0 +1,37 @@
+# Claude
+.claude
+
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+LICENSE
+
+# Environment files
+.env
+.env.*
+
+# Docker
+docker-compose.yml
+docker-compose.yaml
+Dockerfile*
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Node (if you add any Node.js apps later)
+node_modules
+npm-debug.log
+yarn-error.log

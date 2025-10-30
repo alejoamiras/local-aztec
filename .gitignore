@@ -1,0 +1,149 @@
+# Claude
+.claude
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+.env.production
+
+# Docker
+docker-compose.override.yml
+docker-compose.override.yaml
+
+# IDE and Editor directories
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.iml
+*.ipr
+*.iws
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Node.js (for future apps)
+node_modules/
+jspm_packages/
+bower_components/
+
+# Build outputs
+dist/
+build/
+out/
+target/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Testing
+coverage/
+*.lcov
+.nyc_output
+.coverage
+.pytest_cache/
+htmlcov/
+*.cover
+.hypothesis/
+
+# Package files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+.tmp/
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Security - Never commit these
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+private/
+secrets/
+credentials.json
+
+# Aztec specific (if any generated locally)
+.aztec/
+aztec-data/
+
+# Bridge and Apps (future)
+bridge/node_modules/
+bridge/build/
+bridge/dist/
+bridge-app/node_modules/
+bridge-app/build/
+bridge-app/dist/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+env/
+venv/
+ENV/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Terraform (if used for infrastructure)
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Misc
+.cache/
+.history
+.viminfo

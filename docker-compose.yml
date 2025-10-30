@@ -1,0 +1,110 @@
+services:
+  # Anvil - Local Ethereum Network
+  anvil:
+    image: aztecprotocol/aztec:3.0.0-devnet.2
+    container_name: anvil
+    entrypoint: ["anvil"]
+    command: ["--host", "0.0.0.0", "--chain-id", "31337", "--silent"]
+    ports:
+      - "8545:8545"
+    networks:
+      - aztec-network
+    healthcheck:
+      test: ["CMD", "cast", "block-number", "--rpc-url", "http://localhost:8545"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  # Aztec L2 Network
+  aztec:
+    image: aztecprotocol/aztec:3.0.0-devnet.2
+    container_name: aztec-local-network
+    entrypoint: ["node", "--no-warnings", "/usr/src/yarn-project/aztec/dest/bin/index.js"]
+    command: ["start", "--sandbox", "--l1-rpc-urls=http://host.docker.internal:8545"]
+    ports:
+      - "8080:8080"   # Aztec API
+      - "8081:8081"   # Additional port
+      - "40000:40000" # P2P port
+    environment:
+      # L1 Connection
+      - ETHEREUM_HOST=http://anvil:8545
+      - L1_CHAIN_ID=31337
+      # Performance settings
+      - ARCHIVER_POLLING_INTERVAL_MS=500
+      - P2P_BLOCK_CHECK_INTERVAL_MS=500
+      - SEQ_TX_POLLING_INTERVAL_MS=500
+      - WS_BLOCK_CHECK_INTERVAL_MS=500
+      - ARCHIVER_VIEM_POLLING_INTERVAL_MS=500
+      # Test configuration
+      - TEST_ACCOUNTS=true
+      - DEPLOY_AZTEC_CONTRACTS=true
+      # Logging
+      - LOG_LEVEL=info
+      - DEBUG=aztec:*
+    depends_on:
+      anvil:
+        condition: service_healthy
+    networks:
+      - aztec-network
+    volumes:
+      - aztec-data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+  # Otterscan - Lightweight EVM block explorer
+  otterscan:
+    image: otterscan/otterscan:latest
+    container_name: otterscan
+    ports:
+      - "5100:80"
+    environment:
+      # This URL is used by the browser, so it needs to be accessible from your host
+      - ERIGON_URL=http://localhost:8545
+    depends_on:
+      anvil:
+        condition: service_healthy
+    networks:
+      - aztec-network
+    restart: unless-stopped
+
+  # Placeholder for Bridge Service
+  # bridge:
+  #   build:
+  #     context: ./bridge
+  #     dockerfile: Dockerfile
+  #   container_name: aztec-bridge
+  #   environment:
+  #     - L1_RPC_URL=http://anvil:8545
+  #     - L2_RPC_URL=http://aztec:8080
+  #   depends_on:
+  #     - anvil
+  #     - aztec
+  #   networks:
+  #     - aztec-network
+
+  # Placeholder for Bridge Application
+  # bridge-app:
+  #   build:
+  #     context: ./bridge-app
+  #     dockerfile: Dockerfile
+  #   container_name: bridge-app
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - BRIDGE_API_URL=http://bridge:8000
+  #   depends_on:
+  #     - bridge
+  #   networks:
+  #     - aztec-network
+
+networks:
+  aztec-network:
+    driver: bridge
+
+volumes:
+  aztec-data:
