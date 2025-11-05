@@ -1,7 +1,7 @@
 services:
   # Anvil - Local Ethereum Network
   anvil:
-    image: aztecprotocol/aztec:3.0.0-devnet.2
+    image: aztecprotocol/aztec:3.0.0-devnet.4
     container_name: anvil
     entrypoint: ["anvil"]
     command: ["--host", "0.0.0.0", "--chain-id", "31337", "--silent"]
@@ -18,7 +18,7 @@ services:
 
   # Aztec L2 Network
   aztec:
-    image: aztecprotocol/aztec:3.0.0-devnet.2
+    image: aztecprotocol/aztec:3.0.0-devnet.4
     container_name: aztec-local-network
     entrypoint: ["node", "--no-warnings", "/usr/src/yarn-project/aztec/dest/bin/index.js"]
     command: ["start", "--sandbox", "--l1-rpc-urls=http://host.docker.internal:8545"]
@@ -71,6 +71,12 @@ services:
     networks:
       - aztec-network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-s", "http://localhost:80/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   # Placeholder for Bridge Service
   # bridge:
