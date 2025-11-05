@@ -72,6 +72,43 @@ services:
       - aztec-network
     restart: unless-stopped
 
+  aztecexplorer-mongo:
+    image: mongo:latest
+    container_name: aztecexplorer-mongo
+    ports:
+      - "127.0.0.1:27017:27017"
+    volumes:
+      - aztecexplorer-mongo-data:/data/db
+    networks:
+      - aztec-network
+    restart: unless-stopped
+
+  aztecexplorer-indexer:
+    image: aztecexplorer/indexer:0.3.0
+    container_name: aztecexplorer-indexer
+    depends_on:
+      - aztecexplorer-mongo
+    environment:
+      - DB_URL=mongodb://aztecexplorer-mongo:27017
+      - PXE_URL=http://aztec:8080
+    networks:
+      - aztec-network
+    restart: unless-stopped
+
+  aztecexplorer-api:
+    image: aztecexplorer/api:0.3.0
+    container_name: aztecexplorer-api
+    depends_on:
+      - aztecexplorer-mongo
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - DB_URL=mongodb://aztecexplorer-mongo:27017
+    networks:
+      - aztec-network
+    restart: unless-stopped
+
   # Placeholder for Bridge Service
   # bridge:
   #   build:
@@ -108,3 +145,4 @@ networks:
 
 volumes:
   aztec-data:
+  aztecexplorer-mongo-data:
