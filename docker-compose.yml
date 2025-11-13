@@ -110,7 +110,7 @@ services:
     restart: unless-stopped
   
   aztecexplorer-frontend:
-    image: bdehri/ztec-explorer-frontend:0.0.1
+    image: bdehri/aztec-explorer-frontend:0.0.1
     container_name: aztecexplorer-frontend
     depends_on:
       - aztecexplorer-api
