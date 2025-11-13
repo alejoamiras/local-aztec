@@ -84,7 +84,7 @@ services:
     restart: unless-stopped
 
   aztecexplorer-indexer:
-    image: bdehri/aztec-indexer:0.1.0
+    image: bdehri/aztec-indexer:0.1.1
     container_name: aztecexplorer-indexer
     depends_on:
       - aztecexplorer-mongo
