@@ -84,7 +84,7 @@ services:
     restart: unless-stopped
 
   aztecexplorer-indexer:
-    image: aztecexplorer/indexer:0.3.0
+    image: bdehri/aztec-indexer:0.1.0
     container_name: aztecexplorer-indexer
     depends_on:
       - aztecexplorer-mongo
@@ -96,7 +96,7 @@ services:
     restart: unless-stopped
 
   aztecexplorer-api:
-    image: aztecexplorer/api:0.3.0
+    image: bdehri/aztec-explorer-api:0.1.0
     container_name: aztecexplorer-api
     depends_on:
       - aztecexplorer-mongo
@@ -108,6 +108,18 @@ services:
     networks:
       - aztec-network
     restart: unless-stopped
+  
+  aztecexplorer-frontend:
+    image: bdehri/ztec-explorer-frontend:0.0.1
+    container_name: aztecexplorer-frontend
+    depends_on:
+      - aztecexplorer-api
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://aztecexplorer-api:3000}
+      VITE_API_TESTNET_URL: ${VITE_API_TESTNET_URL:-http://aztecexplorer-api:3000}
+      VITE_API_DEVNET_URL: ${VITE_API_DEVNET_URL:-http://aztecexplorer-api:3000}
+    ports:
+      - "8082:80"
 
   # Placeholder for Bridge Service
   # bridge:
