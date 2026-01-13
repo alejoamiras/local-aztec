@@ -1,7 +1,7 @@
 services:
   # Anvil - Local Ethereum Network
   anvil:
-    image: aztecprotocol/aztec:3.0.0-devnet.4
+    image: aztecprotocol/aztec:3.0.0-devnet.20251212
     container_name: anvil
     entrypoint: ["anvil"]
     command: ["--host", "0.0.0.0", "--chain-id", "31337", "--silent"]
@@ -18,10 +18,10 @@ services:
 
   # Aztec L2 Network
   aztec:
-    image: aztecprotocol/aztec:3.0.0-devnet.4
+    image: aztecprotocol/aztec:3.0.0-devnet.20251212
     container_name: aztec-local-network
     entrypoint: ["node", "--no-warnings", "/usr/src/yarn-project/aztec/dest/bin/index.js"]
-    command: ["start", "--sandbox", "--l1-rpc-urls=http://host.docker.internal:8545"]
+    command: ["start", "--local-network", "--l1-rpc-urls=http://host.docker.internal:8545"]
     ports:
       - "8080:8080"   # Aztec API
       - "8081:8081"   # Additional port
