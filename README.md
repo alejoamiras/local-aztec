@@ -8,6 +8,7 @@ A Docker Compose setup for running a complete Aztec development environment with
 - **Anvil**: Local Ethereum network (L1) running on port 8545
 - **Aztec Local Network**: Aztec L2 network running on port 8080, connected to Anvil
 - **Otterscan**: Lightweight block explorer for viewing the local Ethereum (L1) network
+- **Aztec Explorer**: Block explorer for viewing the Aztec L2 network (blocks, transactions)
 
 ### Planned (Placeholders included):
 - Bridge between L1 and L2
@@ -17,7 +18,7 @@ A Docker Compose setup for running a complete Aztec development environment with
 
 - Docker and Docker Compose installed
 - At least 4GB of available RAM
-- Ports 8545, 8080, 8081, and 5100 available
+- Ports 8545, 8080, 8081, 5100, 8082, and 3000 available
 
 ## Quick Start
 
@@ -36,6 +37,7 @@ This will:
 - Start Anvil (local Ethereum L1 network)
 - Start the Aztec L2 network (connects to Anvil and deploys contracts)
 - Start Otterscan block explorer for viewing L1 activity
+- Start Aztec Explorer for viewing L2 activity
 
 ## Accessing Services
 
@@ -43,7 +45,9 @@ Once running, you can access:
 
 - **Anvil RPC**: http://localhost:8545
 - **Aztec Sandbox**: http://localhost:8080
-- **Otterscan Block Explorer**: http://localhost:5100
+- **Otterscan Block Explorer (L1)**: http://localhost:5100
+- **Aztec Explorer (L2)**: http://localhost:8082
+- **Aztec Explorer API**: http://localhost:3000
 
 ## Service Details
 
@@ -67,6 +71,16 @@ A fast and lightweight Ethereum block explorer:
 - View blocks, transactions, and contract deployments
 - Monitor the L1 contracts deployed by Aztec
 
+### Aztec Explorer
+A block explorer for the Aztec L2 network:
+- Provides a web UI to browse Aztec L2 blocks and transactions
+- Access the web UI at http://localhost:8082
+- Consists of four components:
+  - **MongoDB**: Database for storing indexed data
+  - **Indexer**: Syncs blocks and transactions from the Aztec network
+  - **API**: REST API for querying indexed data (port 3000)
+  - **Frontend**: Web interface for browsing the data (port 8082)
+
 ## Development Usage
 
 ### Connecting to the Networks
@@ -89,6 +103,8 @@ docker-compose logs -f
 docker-compose logs -f anvil
 docker-compose logs -f aztec
 docker-compose logs -f otterscan
+docker-compose logs -f aztecexplorer-frontend
+docker-compose logs -f aztecexplorer-indexer
 ```
 
 ### Stopping Services
@@ -111,7 +127,7 @@ docker-compose down -v
 ## Troubleshooting
 
 ### Port Conflicts
-If you get port binding errors, ensure no other services are using ports 8545, 8080, 8081, or 5100.
+If you get port binding errors, ensure no other services are using ports 8545, 8080, 8081, 5100, 8082, or 3000.
 
 ### Aztec Installation Fails
 The Aztec installation requires internet access. Ensure your Docker daemon can reach external networks.

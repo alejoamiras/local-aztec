@@ -78,6 +78,7 @@ services:
       retries: 5
       start_period: 20s
 
+  # Aztec Explorer - MongoDB database for indexer storage
   aztecexplorer-mongo:
     image: mongo:latest
     container_name: aztecexplorer-mongo
@@ -89,6 +90,7 @@ services:
       - aztec-network
     restart: unless-stopped
 
+  # Aztec Explorer - Indexer that syncs Aztec L2 blocks and transactions
   aztecexplorer-indexer:
     image: bdehri/aztecexplorer-indexer:3.0.0-devnet.20251212
     container_name: aztecexplorer-indexer
@@ -104,6 +106,7 @@ services:
       - aztec-network
     restart: unless-stopped
 
+  # Aztec Explorer - REST API for querying indexed data
   aztecexplorer-api:
     image: bdehri/aztecexplorer-indexer-api:3.0.0-devnet.20251212
     container_name: aztecexplorer-api
@@ -119,6 +122,7 @@ services:
       - aztec-network
     restart: unless-stopped
   
+  # Aztec Explorer - Web UI for browsing Aztec L2 blocks and transactions
   aztecexplorer-frontend:
     image: bdehri/aztecexplorer-fe:3.0.0-devnet.20251212-localaztec
     container_name: aztecexplorer-frontend
