@@ -1,7 +1,7 @@
 services:
   # Anvil - Local Ethereum Network
   anvil:
-    image: aztecprotocol/aztec:3.0.0-devnet.2
+    image: aztecprotocol/aztec:3.0.0-devnet.20251212
     container_name: anvil
     entrypoint: ["anvil"]
     command: ["--host", "0.0.0.0", "--chain-id", "31337", "--silent"]
@@ -18,10 +18,10 @@ services:
 
   # Aztec L2 Network
   aztec:
-    image: aztecprotocol/aztec:3.0.0-devnet.2
+    image: aztecprotocol/aztec:3.0.0-devnet.20251212
     container_name: aztec-local-network
     entrypoint: ["node", "--no-warnings", "/usr/src/yarn-project/aztec/dest/bin/index.js"]
-    command: ["start", "--sandbox", "--l1-rpc-urls=http://host.docker.internal:8545"]
+    command: ["start", "--local-network", "--l1-rpc-urls=http://host.docker.internal:8545"]
     ports:
       - "8080:8080"   # Aztec API
       - "8081:8081"   # Additional port
@@ -71,6 +71,12 @@ services:
     networks:
       - aztec-network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-s", "http://localhost:80/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   aztecexplorer-mongo:
     image: mongo:latest
@@ -84,10 +90,13 @@ services:
     restart: unless-stopped
 
   aztecexplorer-indexer:
-    image: bdehri/aztec-indexer:0.1.1
+    image: bdehri/aztecexplorer-indexer:3.0.0-devnet.20251212
     container_name: aztecexplorer-indexer
     depends_on:
-      - aztecexplorer-mongo
+      aztecexplorer-mongo:
+        condition: service_started
+      aztec:
+        condition: service_healthy
     environment:
       - DB_URL=mongodb://aztecexplorer-mongo:27017
       - PXE_URL=http://aztec:8080
@@ -96,7 +105,7 @@ services:
     restart: unless-stopped
 
   aztecexplorer-api:
-    image: bdehri/aztec-explorer-api:0.1.0
+    image: bdehri/aztecexplorer-indexer-api:3.0.0-devnet.20251212
     container_name: aztecexplorer-api
     depends_on:
       - aztecexplorer-mongo
@@ -105,21 +114,20 @@ services:
     environment:
       - PORT=3000
       - DB_URL=mongodb://aztecexplorer-mongo:27017
+      - ENABLE_CORS=true
     networks:
       - aztec-network
     restart: unless-stopped
   
   aztecexplorer-frontend:
-    image: bdehri/aztec-explorer-frontend:0.0.1
+    image: bdehri/aztecexplorer-fe:3.0.0-devnet.20251212-localaztec
     container_name: aztecexplorer-frontend
     depends_on:
       - aztecexplorer-api
-    environment:
-      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://aztecexplorer-api:3000}
-      VITE_API_TESTNET_URL: ${VITE_API_TESTNET_URL:-http://aztecexplorer-api:3000}
-      VITE_API_DEVNET_URL: ${VITE_API_DEVNET_URL:-http://aztecexplorer-api:3000}
     ports:
       - "8082:80"
+    networks:
+      - aztec-network
 
   # Placeholder for Bridge Service
   # bridge:
